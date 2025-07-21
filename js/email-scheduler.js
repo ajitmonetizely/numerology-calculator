@@ -77,17 +77,21 @@ class EmailScheduler {
      */
     handleDateSelection(checkbox) {
         const dateKey = checkbox.dataset.dateKey;
-        const dateCard = checkbox.closest('.interesting-date-card');
+        const dateCard = checkbox.closest('.bg-white');
+        
+        console.log('📅 Date selection changed:', dateKey, 'checked:', checkbox.checked);
         
         if (checkbox.checked) {
             // Add date to selection
             const dateObj = this.createDateObjectFromKey(dateKey);
             this.selectedDates.set(dateKey, dateObj);
             dateCard.classList.add('selected');
+            console.log('✅ Added date to selection. Total selected:', this.selectedDates.size);
         } else {
             // Remove date from selection
             this.selectedDates.delete(dateKey);
             dateCard.classList.remove('selected');
+            console.log('❌ Removed date from selection. Total selected:', this.selectedDates.size);
         }
         
         this.updateSelectedDatesDisplay();

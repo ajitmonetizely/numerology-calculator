@@ -188,7 +188,7 @@ class DateFilters {
         const statusDiv = document.getElementById('dateFilterStatus');
         if (statusDiv) {
             if (message) {
-                statusDiv.innerHTML = `<p class="filter-message">${message}</p>`;
+                statusDiv.innerHTML = `<p class="text-center text-blue-600 bg-blue-50 border border-blue-200 rounded-lg p-3 font-medium">${message}</p>`;
                 statusDiv.style.display = 'block';
             } else {
                 statusDiv.style.display = 'none';

@@ -48,18 +48,21 @@ class UIManager {
         newMember.className = 'family-member';
         newMember.setAttribute('data-member', this.familyMemberCount);
         
+        newMember.className = 'family-member bg-white rounded-xl shadow-lg p-6 border border-gray-100';
         newMember.innerHTML = `
-            <div class="member-header">
-                <h3>Family Member ${this.familyMemberCount}</h3>
-                <button type="button" class="remove-member" onclick="window.uiManager.removeFamilyMember(${this.familyMemberCount})">Remove</button>
+            <div class="member-header flex justify-between items-center mb-6">
+                <h3 class="text-xl font-semibold text-gray-800">Family Member ${this.familyMemberCount}</h3>
+                <button type="button" class="remove-member bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200" onclick="window.uiManager.removeFamilyMember(${this.familyMemberCount})">Remove</button>
             </div>
-            <div class="input-group">
-                <label for="name${this.familyMemberCount}">Name:</label>
-                <input type="text" id="name${this.familyMemberCount}" placeholder="Enter name">
-            </div>
-            <div class="input-group">
-                <label for="birthDate${this.familyMemberCount}">Birth Date:</label>
-                <input type="date" id="birthDate${this.familyMemberCount}" required>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="input-group">
+                    <label for="name${this.familyMemberCount}" class="block text-sm font-medium text-gray-700 mb-2">Name:</label>
+                    <input type="text" id="name${this.familyMemberCount}" placeholder="Enter name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200">
+                </div>
+                <div class="input-group">
+                    <label for="birthDate${this.familyMemberCount}" class="block text-sm font-medium text-gray-700 mb-2">Birth Date:</label>
+                    <input type="date" id="birthDate${this.familyMemberCount}" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200">
+                </div>
             </div>
         `;
         
@@ -272,67 +275,84 @@ class UIManager {
         const timelineEndYear = currentYear + APP_CONFIG.zodiac.timelineYears;
         
         return `
-            <div class="family-member-result">
-                <h3>${person.name}</h3>
+            <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+                <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">${person.name}</h3>
                 
-                <div class="zodiac-section">
-                    <h4>Chinese Zodiac</h4>
-                    <div class="zodiac-display">${person.chineseZodiac.fullName}</div>
-                    <div class="zodiac-year">Year of the ${person.chineseZodiac.animal.name} (${person.chineseZodiac.year})</div>
-                </div>
-                
-                <div class="current-year-section ${person.isCurrentYearEnemy ? 'enemy-current-year' : ''}">
-                    <h4>Current Year ${person.currentYearZodiac.year} - ${person.isCurrentYearEnemy ? 'Enemy Year ⚠️' : person.isCurrentYearFriendly ? 'Friendly Year 💚' : 'Neutral Year ✅'}</h4>
-                    <div class="current-year-display ${person.isCurrentYearEnemy ? 'enemy-current-year' : ''}">${person.currentYearZodiac.animal.emoji} ${person.currentYearZodiac.animal.name}</div>
-                    <div class="current-year-status">
-                        <span class="${person.isCurrentYearEnemy ? 'enemy-status' : 'friendly-status'}">
-                            ${person.isCurrentYearEnemy ? 
-                                `${person.currentYearZodiac.animal.name} is the natural enemy of ${person.chineseZodiac.animal.name}` : 
-                                person.isCurrentYearFriendly ?
-                                `${person.currentYearZodiac.animal.name} is a close friend of ${person.chineseZodiac.animal.name}` :
-                                `${person.currentYearZodiac.animal.name} is neutral with ${person.chineseZodiac.animal.name}`}
-                        </span>
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <!-- Left Column -->
+                    <div class="space-y-6">
+                        <!-- Chinese Zodiac -->
+                        <div class="bg-gradient-to-br from-amber-50 to-orange-100 rounded-lg p-6 border border-amber-200">
+                            <h4 class="text-lg font-semibold text-amber-800 mb-3">Chinese Zodiac</h4>
+                            <div class="text-2xl font-bold text-amber-700 mb-2">${person.chineseZodiac.fullName}</div>
+                            <div class="text-amber-600">Year of the ${person.chineseZodiac.animal.name} (${person.chineseZodiac.year})</div>
+                        </div>
+                        
+                        <!-- Current Year Status -->
+                        <div class="rounded-lg p-6 border ${person.isCurrentYearEnemy ? 'bg-red-50 border-red-200' : person.isCurrentYearFriendly ? 'bg-green-50 border-green-200' : 'bg-blue-50 border-blue-200'}">
+                            <h4 class="text-lg font-semibold mb-3 ${person.isCurrentYearEnemy ? 'text-red-800' : person.isCurrentYearFriendly ? 'text-green-800' : 'text-blue-800'}">
+                                Current Year ${person.currentYearZodiac.year} - ${person.isCurrentYearEnemy ? 'Enemy Year ⚠️' : person.isCurrentYearFriendly ? 'Friendly Year 💚' : 'Neutral Year ✅'}
+                            </h4>
+                            <div class="text-2xl font-bold mb-2 ${person.isCurrentYearEnemy ? 'text-red-700' : person.isCurrentYearFriendly ? 'text-green-700' : 'text-blue-700'}">${person.currentYearZodiac.animal.emoji} ${person.currentYearZodiac.animal.name}</div>
+                            <div class="text-sm ${person.isCurrentYearEnemy ? 'text-red-600' : person.isCurrentYearFriendly ? 'text-green-600' : 'text-blue-600'}">
+                                ${person.isCurrentYearEnemy ?
+                                    `${person.currentYearZodiac.animal.name} is the natural enemy of ${person.chineseZodiac.animal.name}` :
+                                    person.isCurrentYearFriendly ?
+                                    `${person.currentYearZodiac.animal.name} is a close friend of ${person.chineseZodiac.animal.name}` :
+                                    `${person.currentYearZodiac.animal.name} is neutral with ${person.chineseZodiac.animal.name}`}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column -->
+                    <div class="space-y-6">
+                        <!-- Lifepath Number -->
+                        <div class="bg-gradient-to-br from-purple-50 to-indigo-100 rounded-lg p-6 border border-purple-200">
+                            <h4 class="text-lg font-semibold text-purple-800 mb-3">Lifepath Number</h4>
+                            <div class="bg-white rounded p-3 mb-3 text-sm font-mono text-gray-700">
+                                Birth Date: ${person.lifepath.birthDate}<br>
+                                Calculation: ${person.lifepath.calculation.join(' + ')} = ${person.lifepath.total}<br>
+                                ${person.lifepath.reductionSteps.join('<br>')}
+                            </div>
+                            <div class="text-4xl font-bold text-center text-purple-700 bg-white rounded-lg py-4">${person.lifepath.number}</div>
+                        </div>
+                        
+                        <!-- Personal Year Number -->
+                        <div class="bg-gradient-to-br from-teal-50 to-cyan-100 rounded-lg p-6 border border-teal-200">
+                            <h4 class="text-lg font-semibold text-teal-800 mb-3">Personal Year Number (${person.personalYear.currentYear})</h4>
+                            <div class="bg-white rounded p-3 mb-3 text-sm font-mono text-gray-700">
+                                Birth Month/Day + Current Year: ${person.personalYear.currentYear}<br>
+                                Calculation: ${person.personalYear.calculation.join(' + ')} = ${person.personalYear.total}<br>
+                                ${person.personalYear.reductionSteps.join('<br>')}
+                            </div>
+                            <div class="text-4xl font-bold text-center text-teal-700 bg-white rounded-lg py-4">${person.personalYear.number}</div>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="zodiac-years-section">
-                    <h4>Chinese Zodiac Years Timeline</h4>
-                    <div class="zodiac-years-grid">
-                        <div class="zodiac-years-column">
-                            <h5>Previous 10 Years (${timelineStartYear}-${currentYear-1})</h5>
+                <!-- Timeline Section -->
+                <div class="mt-8">
+                    <h4 class="text-xl font-semibold text-gray-800 mb-6 text-center">Chinese Zodiac Years Timeline</h4>
+                    <div class="grid lg:grid-cols-2 gap-6">
+                        <div class="space-y-3">
+                            <h5 class="font-semibold text-gray-700 mb-4">Previous 10 Years (${timelineStartYear}-${currentYear-1})</h5>
                             ${person.chineseYears.prior.map(yearData => `
-                                <div class="zodiac-year-item ${yearData.isEnemy ? 'enemy-year' : yearData.isFriendly ? 'friendly-year' : ''}">
-                                    <div class="year">${yearData.zodiac.emoji} ${yearData.year} - ${yearData.zodiac.name} ${yearData.isEnemy ? '⚠️' : yearData.isFriendly ? '💚' : ''}</div>
-                                    <div class="dates">${yearData.startDate} to ${yearData.endDate}</div>
+                                <div class="p-3 rounded-lg border ${yearData.isEnemy ? 'bg-red-50 border-red-200' : yearData.isFriendly ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}">
+                                    <div class="font-semibold ${yearData.isEnemy ? 'text-red-700' : yearData.isFriendly ? 'text-green-700' : 'text-gray-700'}">${yearData.zodiac.emoji} ${yearData.year} - ${yearData.zodiac.name} ${yearData.isEnemy ? '⚠️' : yearData.isFriendly ? '💚' : ''}</div>
+                                    <div class="text-sm text-gray-600">${yearData.startDate} to ${yearData.endDate}</div>
                                 </div>
                             `).join('')}
                         </div>
-                        <div class="zodiac-years-column">
-                            <h5>Next 10 Years (${currentYear+1}-${timelineEndYear})</h5>
+                        <div class="space-y-3">
+                            <h5 class="font-semibold text-gray-700 mb-4">Next 10 Years (${currentYear+1}-${timelineEndYear})</h5>
                             ${person.chineseYears.future.map(yearData => `
-                                <div class="zodiac-year-item ${yearData.isEnemy ? 'enemy-year' : yearData.isFriendly ? 'friendly-year' : ''}">
-                                    <div class="year">${yearData.zodiac.emoji} ${yearData.year} - ${yearData.zodiac.name} ${yearData.isEnemy ? '⚠️' : yearData.isFriendly ? '💚' : ''}</div>
-                                    <div class="dates">${yearData.startDate} to ${yearData.endDate}</div>
+                                <div class="p-3 rounded-lg border ${yearData.isEnemy ? 'bg-red-50 border-red-200' : yearData.isFriendly ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}">
+                                    <div class="font-semibold ${yearData.isEnemy ? 'text-red-700' : yearData.isFriendly ? 'text-green-700' : 'text-gray-700'}">${yearData.zodiac.emoji} ${yearData.year} - ${yearData.zodiac.name} ${yearData.isEnemy ? '⚠️' : yearData.isFriendly ? '💚' : ''}</div>
+                                    <div class="text-sm text-gray-600">${yearData.startDate} to ${yearData.endDate}</div>
                                 </div>
                             `).join('')}
                         </div>
                     </div>
-                </div>
-                
-                <div class="number-section">
-                    <h4>Lifepath Number</h4>
-                    <div class="calculation-steps">Birth Date: ${person.lifepath.birthDate}
-Calculation: ${person.lifepath.calculation.join(' + ')} = ${person.lifepath.total}
-${person.lifepath.reductionSteps.join('\n')}</div>
-                    <div class="lifepath-number">${person.lifepath.number}</div>
-                </div>
-                
-                <div class="number-section">
-                    <h4>Personal Year Number (${person.personalYear.currentYear})</h4>
-                    <div class="calculation-steps">Birth Month/Day + Current Year: ${person.personalYear.currentYear}
-Calculation: ${person.personalYear.calculation.join(' + ')} = ${person.personalYear.total}
-${person.personalYear.reductionSteps.join('\n')}</div>
-                    <div class="lifepath-number">${person.personalYear.number}</div>
                 </div>
             </div>
         `;
@@ -367,26 +387,38 @@ ${person.personalYear.reductionSteps.join('\n')}</div>
         const interestingDatesDiv = document.getElementById('interestingDatesResults');
         
         if (datesToRender.length === 0) {
-            interestingDatesDiv.innerHTML = '<p style="text-align: center; color: #6c757d; font-style: italic;">No dates match the selected filters.</p>';
+            interestingDatesDiv.innerHTML = '<p class="text-center text-gray-500 italic py-8">No dates match the selected filters.</p>';
             return;
         }
         
-        let html = '<div class="interesting-dates-grid">';
+        let html = '<div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">';
         
         datesToRender.forEach(date => {
             const monthName = new Date(date.year, date.month - 1, date.day).toLocaleDateString('en-US', { month: 'long' });
             const dateKey = `${date.year}-${date.month.toString().padStart(2, '0')}-${date.day.toString().padStart(2, '0')}`;
+            const isMasterNumber = [11, 22, 33].includes(date.lifepath);
+            const isSpecialNumber = date.lifepath === 28;
             
             html += `
-                <div class="interesting-date-card">
-                    <input type="checkbox" class="date-checkbox" data-date-key="${dateKey}" id="date-${dateKey}">
-                    <div class="date-content">
-                        <h4>${monthName} ${date.day}, ${date.year}</h4>
-                        <div class="interesting-date-reason">${date.reasons.join(', ')}</div>
-                        <div class="interesting-date-calc">
-                            ${date.calculation.join(' + ')} = ${date.total}
-                            ${date.reductionSteps.length > 0 ? '\n' + date.reductionSteps.join('\n') : ''}
-                            <br><strong>Lifepath: ${date.lifepath}</strong>
+                <div class="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200 cursor-pointer hover:border-primary">
+                    <div class="flex items-start gap-3">
+                        <input type="checkbox" class="date-checkbox mt-1 w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2" data-date-key="${dateKey}" id="date-${dateKey}">
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-semibold text-gray-800 mb-2">${monthName} ${date.day}, ${date.year}</h4>
+                            <div class="text-sm text-gray-600 mb-3">${date.reasons.join(', ')}</div>
+                            <div class="bg-gray-50 rounded p-2 text-xs font-mono text-gray-700 mb-2">
+                                ${date.calculation.join(' + ')} = ${date.total}
+                                ${date.reductionSteps.length > 0 ? '<br>' + date.reductionSteps.join('<br>') : ''}
+                            </div>
+                            <div class="flex items-center justify-center">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                                    isMasterNumber ? 'bg-purple-100 text-purple-800' :
+                                    isSpecialNumber ? 'bg-yellow-100 text-yellow-800' :
+                                    'bg-blue-100 text-blue-800'
+                                }">
+                                    Lifepath: ${date.lifepath}
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -471,14 +503,16 @@ ${person.personalYear.reductionSteps.join('\n')}</div>
         if (testCheckbox && testEmailForm) {
             testCheckbox.addEventListener('change', () => {
                 if (testCheckbox.checked) {
-                    testEmailForm.classList.add('visible');
+                    testEmailForm.classList.remove('opacity-0', 'max-h-0');
+                    testEmailForm.classList.add('opacity-100', 'max-h-96');
                     // Load saved email if available
                     const testUserEmail = document.getElementById('testUserEmail');
                     if (testUserEmail && window.emailScheduler) {
                         testUserEmail.value = window.emailScheduler.userEmail || '';
                     }
                 } else {
-                    testEmailForm.classList.remove('visible');
+                    testEmailForm.classList.remove('opacity-100', 'max-h-96');
+                    testEmailForm.classList.add('opacity-0', 'max-h-0');
                 }
             });
         }
