@@ -320,26 +320,29 @@ class EmailScheduler {
      * @returns {Object} Current user's numerology data
      */
     getCurrentNumerologyData() {
-        // Get the current birthdate from the form
-        const birthdateInput = document.getElementById('birthdate');
+        // Get the current birthdate from the form (first family member)
+        const birthdateInput = document.getElementById('birthDate1');
         if (!birthdateInput || !birthdateInput.value) {
             // Fallback to a default date if no birthdate is set
             return {
                 birthdate: '1990-01-01',
                 lifepath: 1,
-                zodiacSign: 'Horse',
+                zodiacSign: 'Snake',
                 currentYear: new Date().getFullYear()
             };
         }
 
         const birthdate = birthdateInput.value;
         const lifepathResult = NumerologyCalculator.calculateLifepath(birthdate);
-        const zodiacData = ZodiacCalculator.getZodiacInfo(birthdate);
+        
+        // Get zodiac data using our zodiac system
+        const [year, month, day] = birthdate.split('-').map(Number);
+        const zodiacData = window.zodiacSystem.calculateZodiac(year, month, day);
 
         return {
             birthdate: birthdate,
             lifepath: lifepathResult.number,
-            zodiacSign: zodiacData.animal,
+            zodiacSign: zodiacData.animal.name,
             currentYear: new Date().getFullYear(),
             calculation: lifepathResult.calculation,
             reductionSteps: lifepathResult.reductionSteps

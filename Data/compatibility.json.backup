@@ -21,7 +21,7 @@
   "friendGroups": [
     {
       "name": "Water/Earth Group",
-      "animals": ["rat", "dragon", "monkey"],
+      "animals": ["rat", "ox", "dragon", "monkey"],
       "description": "Water nourishes earth, creating stability and growth"
     },
     {

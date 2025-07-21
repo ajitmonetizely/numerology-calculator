@@ -247,6 +247,9 @@ class UIManager {
         // Display interesting dates
         this.displayInterestingDates();
         
+        // Display test email section
+        this.displayTestEmailSection();
+        
         resultsDiv.classList.remove('hidden');
         
         // Scroll to result with smooth animation
@@ -421,6 +424,91 @@ ${person.personalYear.reductionSteps.join('\n')}</div>
             loadingDiv.remove();
         }
     }
+
+    /**
+     * Display test email section with today's date
+     */
+    displayTestEmailSection() {
+        const today = new Date();
+        const todayString = today.toISOString().split('T')[0]; // YYYY-MM-DD format
+        const lifepathResult = NumerologyCalculator.calculateLifepath(todayString);
+        
+        // Update the date display
+        const testDateValue = document.getElementById('testDateValue');
+        const testDateReason = document.getElementById('testDateReason');
+        const testDateCalc = document.getElementById('testDateCalc');
+        
+        if (testDateValue) {
+            testDateValue.textContent = today.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+        
+        if (testDateReason) {
+            const reasons = this.generateTestEmailReasons(today.getDate(), lifepathResult.number);
+            testDateReason.textContent = reasons.join(', ');
+        }
+        
+        if (testDateCalc) {
+            testDateCalc.innerHTML = `
+                ${lifepathResult.calculation.join(' + ')} = ${lifepathResult.total}
+                ${lifepathResult.reductionSteps.length > 0 ? '<br>' + lifepathResult.reductionSteps.join('<br>') : ''}
+                <br><strong>Lifepath: ${lifepathResult.number}</strong>
+            `;
+        }
+
+        // Set up the checkbox event handler
+        const testCheckbox = document.getElementById('testEmailCheckbox');
+        const testEmailForm = document.getElementById('testEmailForm');
+        
+        if (testCheckbox && testEmailForm) {
+            testCheckbox.addEventListener('change', () => {
+                if (testCheckbox.checked) {
+                    testEmailForm.style.display = 'block';
+                    // Load saved email if available
+                    const testUserEmail = document.getElementById('testUserEmail');
+                    if (testUserEmail && window.emailScheduler) {
+                        testUserEmail.value = window.emailScheduler.userEmail || '';
+                    }
+                } else {
+                    testEmailForm.style.display = 'none';
+                }
+            });
+        }
+    }
+
+    /**
+     * Generate reasons for test email date significance
+     * @param {number} day - Day of month
+     * @param {number} lifepath - Lifepath number
+     * @returns {Array} Array of reasons
+     */
+    generateTestEmailReasons(day, lifepath) {
+        const reasons = [];
+        
+        if ([11, 22, 33].includes(lifepath)) {
+            reasons.push(`Master number lifepath ${lifepath}`);
+        } else if (lifepath === 28) {
+            reasons.push(`Special lifepath number 28`);
+        } else {
+            reasons.push(`Lifepath number ${lifepath}`);
+        }
+        
+        if ([11, 22, 33].includes(day)) {
+            reasons.push(`Master number day ${day}`);
+        } else if (day === 28) {
+            reasons.push(`Special day 28`);
+        } else {
+            reasons.push(`Day ${day} of month`);
+        }
+        
+        reasons.push('Perfect for testing email delivery');
+        
+        return reasons;
+    }
 }
 
 // Create global UI manager instance
@@ -437,4 +525,43 @@ function removeFamilyMember(memberNumber) {
 
 function calculateAllNumerology() {
     window.uiManager.calculateAllNumerology();
+}
+
+// Global functions for test email functionality
+function sendTestEmail() {
+    const testUserEmail = document.getElementById('testUserEmail');
+    const testEmailBtn = document.getElementById('testEmailBtn');
+    
+    if (!testUserEmail || !testUserEmail.value.trim()) {
+        alert('Please enter your email address');
+        testUserEmail?.focus();
+        return;
+    }
+    
+    if (!testUserEmail.value.includes('@')) {
+        alert('Please enter a valid email address');
+        testUserEmail.focus();
+        return;
+    }
+    
+    // Disable button while sending
+    testEmailBtn.disabled = true;
+    testEmailBtn.textContent = '📧 Sending...';
+    
+    // Call the email scheduler's sendTestEmail method
+    window.emailScheduler.sendTestEmail(testUserEmail.value.trim())
+        .finally(() => {
+            testEmailBtn.disabled = false;
+            testEmailBtn.textContent = '📧 Send Test Email Now';
+        });
+}
+
+function clearTestEmail() {
+    const testCheckbox = document.getElementById('testEmailCheckbox');
+    const testEmailForm = document.getElementById('testEmailForm');
+    const testUserEmail = document.getElementById('testUserEmail');
+    
+    if (testCheckbox) testCheckbox.checked = false;
+    if (testEmailForm) testEmailForm.style.display = 'none';
+    if (testUserEmail) testUserEmail.value = '';
 }

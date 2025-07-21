@@ -79,7 +79,7 @@ class ChineseZodiac {
                 'snake': 'pig', 'pig': 'snake'
             },
             friendGroups: [
-                ['rat', 'ox', 'dragon', 'monkey'],
+                ['rat', 'dragon', 'monkey'],
                 ['ox', 'snake', 'rooster'],
                 ['tiger', 'horse', 'dog'],
                 ['rabbit', 'goat', 'pig']
@@ -199,20 +199,45 @@ class ChineseZodiac {
         // Animals are always friendly with themselves
         if (key1 === key2) return true;
         
-        if (!this.compatibility || !this.compatibility.friendGroups) return false;
+        if (!this.compatibility) return false;
         
-        // Check if both animals are in the same friendly group
-        for (const group of this.compatibility.friendGroups) {
-            if (Array.isArray(group)) {
-                if (group.includes(key1) && group.includes(key2)) {
-                    return true;
-                }
-            } else if (group.animals) {
-                if (group.animals.includes(key1) && group.animals.includes(key2)) {
-                    return true;
+        // Check trinity groups first (traditional zodiac triangles)
+        if (this.compatibility.friendGroups) {
+            for (const group of this.compatibility.friendGroups) {
+                if (Array.isArray(group)) {
+                    if (group.includes(key1) && group.includes(key2)) {
+                        return true;
+                    }
+                } else if (group.animals) {
+                    if (group.animals.includes(key1) && group.animals.includes(key2)) {
+                        return true;
+                    }
                 }
             }
         }
+        
+        // Check individual compatibility ratings (excellent and good)
+        if (this.compatibility.compatibility && this.compatibility.compatibility[key1]) {
+            const animal1Compat = this.compatibility.compatibility[key1];
+            if (animal1Compat.excellent && animal1Compat.excellent.includes(key2)) {
+                return true;
+            }
+            if (animal1Compat.good && animal1Compat.good.includes(key2)) {
+                return true;
+            }
+        }
+        
+        // Check reverse compatibility (animal2 to animal1)
+        if (this.compatibility.compatibility && this.compatibility.compatibility[key2]) {
+            const animal2Compat = this.compatibility.compatibility[key2];
+            if (animal2Compat.excellent && animal2Compat.excellent.includes(key1)) {
+                return true;
+            }
+            if (animal2Compat.good && animal2Compat.good.includes(key1)) {
+                return true;
+            }
+        }
+        
         return false;
     }
 
