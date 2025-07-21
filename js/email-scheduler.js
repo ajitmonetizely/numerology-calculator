@@ -431,7 +431,9 @@ class EmailScheduler {
                 body: JSON.stringify({
                     userEmail: userEmail,
                     selectedDates: [new Date().toISOString().split('T')[0]], // Today's date
-                    numerologyData: this.getCurrentNumerologyData()
+                    targetTime: new Date().toTimeString().slice(0, 5), // Current time in HH:MM format
+                    numerologyData: this.getCurrentNumerologyData(),
+                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
                 })
             });
 
