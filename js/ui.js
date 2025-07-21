@@ -467,14 +467,14 @@ ${person.personalYear.reductionSteps.join('\n')}</div>
         if (testCheckbox && testEmailForm) {
             testCheckbox.addEventListener('change', () => {
                 if (testCheckbox.checked) {
-                    testEmailForm.style.display = 'block';
+                    testEmailForm.classList.add('visible');
                     // Load saved email if available
                     const testUserEmail = document.getElementById('testUserEmail');
                     if (testUserEmail && window.emailScheduler) {
                         testUserEmail.value = window.emailScheduler.userEmail || '';
                     }
                 } else {
-                    testEmailForm.style.display = 'none';
+                    testEmailForm.classList.remove('visible');
                 }
             });
         }
@@ -562,6 +562,6 @@ function clearTestEmail() {
     const testUserEmail = document.getElementById('testUserEmail');
     
     if (testCheckbox) testCheckbox.checked = false;
-    if (testEmailForm) testEmailForm.style.display = 'none';
+    if (testEmailForm) testEmailForm.classList.remove('visible');
     if (testUserEmail) testUserEmail.value = '';
 }
