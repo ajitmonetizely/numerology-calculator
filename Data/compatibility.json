@@ -1,0 +1,129 @@
+{
+  "metadata": {
+    "description": "Chinese Zodiac compatibility relationships",
+    "source": "Traditional Chinese Astrology",
+    "lastUpdated": "2025-01-19"
+  },
+  "enemies": {
+    "rat": "horse",
+    "horse": "rat",
+    "ox": "goat",
+    "goat": "ox",
+    "tiger": "monkey",
+    "monkey": "tiger",
+    "rabbit": "rooster",
+    "rooster": "rabbit",
+    "dragon": "dog",
+    "dog": "dragon",
+    "snake": "pig",
+    "pig": "snake"
+  },
+  "friendGroups": [
+    {
+      "name": "Water/Earth Group",
+      "animals": ["rat", "ox", "dragon", "monkey"],
+      "description": "Water nourishes earth, creating stability and growth"
+    },
+    {
+      "name": "Earth/Metal Group", 
+      "animals": ["ox", "snake", "rooster"],
+      "description": "Earth produces metal, representing transformation and strength"
+    },
+    {
+      "name": "Wood/Fire Group",
+      "animals": ["tiger", "horse", "dog"],
+      "description": "Wood feeds fire, symbolizing passion and energy"
+    },
+    {
+      "name": "Wood/Water Group",
+      "animals": ["rabbit", "goat", "pig"],
+      "description": "Water nourishes wood, promoting peace and harmony"
+    }
+  ],
+  "compatibility": {
+    "rat": {
+      "excellent": ["dragon", "monkey"],
+      "good": ["ox"],
+      "neutral": ["rat", "tiger", "rabbit", "snake", "rooster", "dog", "pig"],
+      "poor": ["goat"],
+      "enemy": ["horse"]
+    },
+    "ox": {
+      "excellent": ["snake", "rooster"],
+      "good": ["rat"],
+      "neutral": ["ox", "tiger", "rabbit", "dragon", "horse", "monkey", "dog", "pig"],
+      "poor": ["horse"],
+      "enemy": ["goat"]
+    },
+    "tiger": {
+      "excellent": ["horse", "dog"],
+      "good": ["pig"],
+      "neutral": ["rat", "ox", "tiger", "rabbit", "dragon", "snake", "goat", "rooster"],
+      "poor": ["snake"],
+      "enemy": ["monkey"]
+    },
+    "rabbit": {
+      "excellent": ["goat", "pig"],
+      "good": ["dog"],
+      "neutral": ["rat", "ox", "tiger", "rabbit", "dragon", "snake", "horse", "monkey"],
+      "poor": ["dragon"],
+      "enemy": ["rooster"]
+    },
+    "dragon": {
+      "excellent": ["rat", "monkey"],
+      "good": ["rooster"],
+      "neutral": ["ox", "tiger", "dragon", "snake", "horse", "goat", "pig"],
+      "poor": ["rabbit"],
+      "enemy": ["dog"]
+    },
+    "snake": {
+      "excellent": ["ox", "rooster"],
+      "good": ["monkey"],
+      "neutral": ["rat", "rabbit", "dragon", "snake", "horse", "goat", "dog"],
+      "poor": ["tiger"],
+      "enemy": ["pig"]
+    },
+    "horse": {
+      "excellent": ["tiger", "dog"],
+      "good": ["goat"],
+      "neutral": ["horse", "rabbit", "dragon", "snake", "monkey", "rooster", "pig"],
+      "poor": ["ox"],
+      "enemy": ["rat"]
+    },
+    "goat": {
+      "excellent": ["rabbit", "pig"],
+      "good": ["horse"],
+      "neutral": ["tiger", "dragon", "snake", "goat", "monkey", "rooster", "dog"],
+      "poor": ["rat"],
+      "enemy": ["ox"]
+    },
+    "monkey": {
+      "excellent": ["rat", "dragon"],
+      "good": ["snake"],
+      "neutral": ["ox", "rabbit", "horse", "goat", "monkey", "rooster", "dog", "pig"],
+      "poor": ["pig"],
+      "enemy": ["tiger"]
+    },
+    "rooster": {
+      "excellent": ["ox", "snake"],
+      "good": ["dragon"],
+      "neutral": ["rat", "tiger", "horse", "goat", "monkey", "rooster", "dog", "pig"],
+      "poor": ["dog"],
+      "enemy": ["rabbit"]
+    },
+    "dog": {
+      "excellent": ["tiger", "horse"],
+      "good": ["rabbit"],
+      "neutral": ["rat", "ox", "snake", "goat", "monkey", "dog", "pig"],
+      "poor": ["rooster"],
+      "enemy": ["dragon"]
+    },
+    "pig": {
+      "excellent": ["rabbit", "goat"],
+      "good": ["tiger"],
+      "neutral": ["rat", "ox", "horse", "dog", "pig"],
+      "poor": ["monkey"],
+      "enemy": ["snake"]
+    }
+  }
+}

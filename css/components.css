@@ -1,0 +1,400 @@
+/* Family Member Components */
+.family-member {
+    margin-bottom: 30px;
+    padding: 25px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border: 2px solid #e9ecef;
+}
+
+.member-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.member-header h3 {
+    margin: 0;
+    color: #333;
+    font-size: 1.3em;
+}
+
+.remove-member {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.remove-member:hover {
+    background: #c82333;
+}
+
+/* Family Controls */
+.family-controls {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.add-member-btn {
+    flex: 1;
+    padding: 15px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-member-btn:hover {
+    background: #218838;
+}
+
+.add-member-btn:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+}
+
+.calculate-btn {
+    flex: 2;
+    padding: 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.calculate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Number Section */
+.number-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border-left: 5px solid #667eea;
+}
+
+.number-section h3 {
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+}
+
+/* Family Member Result */
+.family-member-result {
+    margin-bottom: 40px;
+    padding: 25px;
+    background: white;
+    border-radius: 10px;
+    border: 2px solid #667eea;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.family-member-result h3 {
+    color: #667eea;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    text-align: center;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 10px;
+}
+
+.family-member-result h4 {
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+}
+
+.family-member-result:last-child {
+    margin-bottom: 0;
+}
+
+/* Zodiac Section */
+.zodiac-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+    border-radius: 10px;
+    border-left: 5px solid #ff6b6b;
+}
+
+.zodiac-section h4 {
+    color: #d63031;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+}
+
+.zodiac-display {
+    text-align: center;
+    font-size: 2.5em;
+    margin: 15px 0;
+    color: #d63031;
+}
+
+.zodiac-year {
+    font-size: 1.1em;
+    color: #2d3436;
+    font-style: italic;
+    text-align: center;
+}
+
+/* Current Year Section */
+.current-year-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: linear-gradient(135deg, #e8f8f5 0%, #d5f4e6 100%);
+    border-radius: 10px;
+    border-left: 5px solid #27ae60;
+}
+
+.current-year-section.enemy-current-year {
+    background: linear-gradient(135deg, #ffebee 0%, #fce4ec 100%);
+    border-left: 5px solid #e74c3c;
+}
+
+.current-year-section h4 {
+    color: #27ae60;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+}
+
+.current-year-section.enemy-current-year h4 {
+    color: #c0392b;
+}
+
+.current-year-display {
+    text-align: center;
+    font-size: 2em;
+    margin: 15px 0;
+    color: #27ae60;
+}
+
+.current-year-display.enemy-current-year {
+    color: #c0392b;
+}
+
+.current-year-status {
+    text-align: center;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.enemy-status {
+    color: #e74c3c;
+}
+
+.friendly-status {
+    color: #27ae60;
+}
+
+/* Zodiac Years Section */
+.zodiac-years-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #e8f4f8;
+    border-radius: 10px;
+    border-left: 5px solid #17a2b8;
+}
+
+.zodiac-years-section h4 {
+    color: #17a2b8;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+}
+
+.zodiac-years-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.zodiac-years-column h5 {
+    color: #495057;
+    margin: 0 0 10px 0;
+    font-size: 1.1em;
+    text-align: center;
+}
+
+.zodiac-year-item {
+    background: white;
+    padding: 8px 12px;
+    margin: 4px 0;
+    border-radius: 6px;
+    border-left: 3px solid #17a2b8;
+    font-size: 0.9em;
+}
+
+.zodiac-year-item .year {
+    font-weight: bold;
+    color: #17a2b8;
+}
+
+.zodiac-year-item .dates {
+    color: #6c757d;
+    font-size: 0.85em;
+}
+
+.zodiac-year-item.enemy-year {
+    background: linear-gradient(135deg, #ffebee 0%, #fce4ec 100%);
+    border-left: 3px solid #e74c3c;
+    border: 1px solid #e74c3c;
+}
+
+.zodiac-year-item.enemy-year .year {
+    color: #c0392b;
+    font-weight: bold;
+}
+
+.zodiac-year-item.enemy-year .dates {
+    color: #e74c3c;
+}
+
+.zodiac-year-item.friendly-year {
+    background: linear-gradient(135deg, #e8f8f5 0%, #d5f4e6 100%);
+    border-left: 3px solid #27ae60;
+    border: 1px solid #27ae60;
+}
+
+.zodiac-year-item.friendly-year .year {
+    color: #27ae60;
+    font-weight: bold;
+}
+
+.zodiac-year-item.friendly-year .dates {
+    color: #27ae60;
+}
+
+/* Interesting Dates Section */
+.interesting-dates-section {
+    margin-top: 40px;
+    padding: 25px;
+    background: #fff3cd;
+    border-radius: 10px;
+    border-left: 5px solid #ffc107;
+}
+
+.interesting-dates-section h2 {
+    color: #856404;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.interesting-description {
+    color: #856404;
+    font-style: italic;
+    margin-bottom: 20px;
+}
+
+.interesting-dates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.interesting-date-card {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.interesting-date-card h4 {
+    color: #667eea;
+    margin: 0 0 10px 0;
+    font-size: 1.1em;
+}
+
+.interesting-date-reason {
+    font-size: 0.9em;
+    color: #6c757d;
+    font-style: italic;
+    margin-bottom: 8px;
+}
+
+.interesting-date-calc {
+    font-family: 'Courier New', monospace;
+    font-size: 0.85em;
+    background: #f8f9fa;
+    padding: 8px;
+    border-radius: 4px;
+    border-left: 3px solid #667eea;
+}
+
+/* Filter Controls */
+.filter-controls {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.filter-group label {
+    font-weight: bold;
+    color: #495057;
+    font-size: 0.9em;
+}
+
+.filter-group select {
+    padding: 8px 12px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 0.9em;
+    min-width: 120px;
+}
+
+.filter-group select:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.clear-filters-btn {
+    padding: 8px 15px;
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    align-self: flex-end;
+}
+
+.clear-filters-btn:hover {
+    background: #5a6268;
+}

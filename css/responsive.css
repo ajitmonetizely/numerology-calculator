@@ -1,0 +1,160 @@
+/* Mobile First Responsive Design */
+
+/* Small devices (phones, up to 576px) */
+@media (max-width: 576px) {
+    body {
+        padding: 10px;
+    }
+    
+    .container {
+        padding: 20px;
+    }
+    
+    h1 {
+        font-size: 2em;
+    }
+    
+    .family-controls {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .add-member-btn, .calculate-btn {
+        flex: none;
+        width: 100%;
+    }
+    
+    .zodiac-years-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .interesting-dates-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .filter-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+    
+    .filter-group {
+        align-items: stretch;
+    }
+    
+    .clear-filters-btn {
+        align-self: stretch;
+        margin-top: 10px;
+    }
+    
+    .lifepath-number {
+        font-size: 2.5em;
+    }
+    
+    .zodiac-display {
+        font-size: 2em;
+    }
+    
+    .current-year-display {
+        font-size: 1.5em;
+    }
+}
+
+/* Medium devices (tablets, 576px to 768px) */
+@media (min-width: 576px) and (max-width: 768px) {
+    .container {
+        padding: 30px;
+    }
+    
+    h1 {
+        font-size: 2.2em;
+    }
+    
+    .zodiac-years-grid {
+        gap: 15px;
+    }
+    
+    .interesting-dates-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+    
+    .filter-controls {
+        justify-content: space-between;
+    }
+}
+
+/* Large devices (desktops, 768px and up) */
+@media (min-width: 768px) {
+    .filter-controls {
+        justify-content: flex-start;
+    }
+    
+    .clear-filters-btn {
+        margin-left: auto;
+    }
+}
+
+/* Print styles */
+@media print {
+    body {
+        background: white;
+        padding: 0;
+    }
+    
+    .container {
+        box-shadow: none;
+        border-radius: 0;
+        padding: 20px;
+    }
+    
+    .family-controls,
+    .filter-controls {
+        display: none;
+    }
+    
+    .examples {
+        page-break-inside: avoid;
+    }
+    
+    .family-member-result {
+        page-break-inside: avoid;
+        margin-bottom: 30px;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .zodiac-year-item.enemy-year {
+        border: 2px solid #000;
+        background: #ffcccc;
+    }
+    
+    .zodiac-year-item.friendly-year {
+        border: 2px solid #000;
+        background: #ccffcc;
+    }
+    
+    .current-year-section.enemy-current-year {
+        border: 2px solid #000;
+        background: #ffcccc;
+    }
+    
+    .current-year-section {
+        border: 2px solid #000;
+        background: #ccffcc;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .calculate-btn:hover {
+        transform: none;
+    }
+}
