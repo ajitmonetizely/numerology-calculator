@@ -41,31 +41,30 @@
             <div id="familyResults"></div>
             
             <div id="testEmailSection" class="test-email-section">
-                <h2>🧪 Test Email System</h2>
-                <p class="test-description">
+                <h3>🧪 Test Email System</h3>
+                <p class="test-email-description">
                     Test if the email delivery system is working by sending yourself a numerology insight for today's date
                 </p>
                 
-                <div class="test-email-card">
-                    <input type="checkbox" class="test-email-checkbox" id="testEmailCheckbox">
-                    <div class="test-date-content">
-                        <h4 id="testDateLabel">Today: <span id="testDateValue"></span></h4>
-                        <div class="test-date-reason" id="testDateReason"></div>
-                        <div class="test-date-calc" id="testDateCalc"></div>
-                    </div>
+                <div class="test-date-display">
+                    <h4>Today: <span id="testDateValue"></span></h4>
+                    <div class="test-date-info" id="testDateReason"></div>
+                    <div class="test-date-info" id="testDateCalc"></div>
                 </div>
                 
-                <div id="testEmailForm" class="test-email-form" style="display: none;">
-                    <div class="input-group">
-                        <label for="testUserEmail">Email Address:</label>
-                        <input type="email" id="testUserEmail" placeholder="your.email@example.com" required>
-                    </div>
+                <div class="test-email-controls">
+                    <input type="checkbox" class="test-email-checkbox" id="testEmailCheckbox">
+                    <label for="testEmailCheckbox" class="test-checkbox-label">Send me a test email with today's numerology</label>
+                </div>
+                
+                <div id="testEmailForm" class="test-email-form">
+                    <input type="email" id="testUserEmail" placeholder="Enter your email address" required>
                     
                     <div class="test-email-actions">
-                        <button onclick="sendTestEmail()" class="test-email-btn" id="testEmailBtn">
+                        <button onclick="sendTestEmail()" class="send-test-email-btn" id="testEmailBtn">
                             📧 Send Test Email Now
                         </button>
-                        <button onclick="clearTestEmail()" class="clear-test-btn">
+                        <button onclick="clearTestEmail()" class="clear-test-email-btn">
                             Clear
                         </button>
                     </div>
