@@ -39,6 +39,7 @@ class EmailScheduler {
     init() {
         this.setupEventListeners();
         this.loadUserPreferences();
+        this.updateTestTimeOption();
     }
 
     /**
@@ -246,9 +247,10 @@ class EmailScheduler {
         scheduleBtn.textContent = 'Scheduling...';
         
         try {
+            const actualSendTime = this.getActualSendTime(timeSelect.value);
             const emailData = {
                 email: emailInput.value.trim(),
-                reminderTime: timeSelect.value,
+                reminderTime: actualSendTime,
                 selectedDates: Array.from(this.selectedDates.values()),
                 timestamp: new Date().toISOString()
             };
@@ -505,6 +507,43 @@ class EmailScheduler {
      */
     getScheduledEmails() {
         return JSON.parse(localStorage.getItem('scheduledEmails') || '[]');
+    }
+
+    /**
+     * Update the test time option to show current time + 30 minutes
+     */
+    updateTestTimeOption() {
+        const testOption = document.getElementById('testTimeOption');
+        if (testOption) {
+            const now = new Date();
+            const testTime = new Date(now.getTime() + 30 * 60 * 1000); // Add 30 minutes
+            const timeString = testTime.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false,
+                timeZone: 'America/Los_Angeles'
+            });
+            testOption.textContent = `${timeString} (Current + 30min - for testing)`;
+            testOption.value = timeString;
+        }
+    }
+
+    /**
+     * Get the actual time to send (handles test time logic)
+     */
+    getActualSendTime(selectedTime) {
+        if (!selectedTime || selectedTime === '') {
+            // If empty/test option selected, return current time + 30 minutes
+            const now = new Date();
+            const testTime = new Date(now.getTime() + 30 * 60 * 1000);
+            return testTime.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false,
+                timeZone: 'America/Los_Angeles'
+            });
+        }
+        return selectedTime;
     }
 }
 
