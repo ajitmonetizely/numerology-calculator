@@ -451,11 +451,11 @@ class DateFilters {
      */
     getSelectedDates() {
         const selectedDates = [];
-        const checkboxes = document.querySelectorAll('input[type="checkbox"][data-date]');
+        const checkboxes = document.querySelectorAll('input[type="checkbox"][data-date-key]');
         
         checkboxes.forEach(checkbox => {
             if (checkbox.checked) {
-                const dateStr = checkbox.getAttribute('data-date');
+                const dateStr = checkbox.getAttribute('data-date-key');
                 const dateObj = this.filteredDates.find(date =>
                     `${date.year}-${date.month.toString().padStart(2, '0')}-${date.day.toString().padStart(2, '0')}` === dateStr
                 );
