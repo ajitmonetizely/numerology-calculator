@@ -430,7 +430,11 @@ ${person.personalYear.reductionSteps.join('\n')}</div>
      */
     displayTestEmailSection() {
         const today = new Date();
-        const todayString = today.toISOString().split('T')[0]; // YYYY-MM-DD format
+        // Use local date instead of UTC to match the display
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        const todayString = `${year}-${month}-${day}`; // Local date in YYYY-MM-DD format
         const lifepathResult = NumerologyCalculator.calculateLifepath(todayString);
         
         // Update the date display

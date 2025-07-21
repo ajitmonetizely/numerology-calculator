@@ -22,6 +22,18 @@ class EmailScheduler {
     }
 
     /**
+     * Get today's date in local timezone as YYYY-MM-DD string
+     * @returns {string} Today's date in YYYY-MM-DD format
+     */
+    getTodayLocalDate() {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    /**
      * Initialize the email scheduler
      */
     init() {
@@ -430,7 +442,7 @@ class EmailScheduler {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     userEmail: userEmail,
-                    selectedDates: [new Date().toISOString().split('T')[0]], // Today's date
+                    selectedDates: [this.getTodayLocalDate()], // Today's date in local timezone
                     targetTime: new Date().toTimeString().slice(0, 5), // Current time in HH:MM format
                     numerologyData: this.getCurrentNumerologyData(),
                     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
