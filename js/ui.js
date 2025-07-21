@@ -379,7 +379,7 @@ ${person.personalYear.reductionSteps.join('\n')}</div>
             
             html += `
                 <div class="interesting-date-card">
-                    <input type="checkbox" class="date-checkbox" data-date="${dateKey}" id="date-${dateKey}">
+                    <input type="checkbox" class="date-checkbox" data-date-key="${dateKey}" id="date-${dateKey}">
                     <div class="date-content">
                         <h4>${monthName} ${date.day}, ${date.year}</h4>
                         <div class="interesting-date-reason">${date.reasons.join(', ')}</div>
