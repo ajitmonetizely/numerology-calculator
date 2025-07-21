@@ -23,9 +23,9 @@ const APP_CONFIG = {
     
     // Data file paths
     dataFiles: {
-        chineseNewYear: 'Data/chinese-new-year.json',
-        zodiacAnimals: 'Data/zodiac-animals.json',
-        compatibility: 'Data/compatibility.json'
+        chineseNewYear: 'data/chinese-new-year.json',
+        zodiacAnimals: 'data/zodiac-animals.json',
+        compatibility: 'data/compatibility.json'
     },
     
     // UI settings
