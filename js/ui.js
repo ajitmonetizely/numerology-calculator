@@ -339,16 +339,17 @@ ${person.personalYear.reductionSteps.join('\n')}</div>
      * Display interesting dates section
      */
     displayInterestingDates() {
-        const interestingDates = NumerologyCalculator.findInterestingDates(APP_CONFIG.numerology.currentYear);
         const currentYear = APP_CONFIG.numerology.currentYear;
         
         document.getElementById('interestingYear').textContent = currentYear;
         
-        // Update filter system
-        window.dateFilters.setInterestingDates(interestingDates);
+        // Initialize filter system with empty dates and populate options
+        window.dateFilters.setInterestingDates([]);
         window.dateFilters.updateFilterOptions();
         
-        this.renderInterestingDates(interestingDates);
+        // Start with no dates showing - user must select filters
+        window.dateFilters.clearFilters();
+        this.renderInterestingDates([]);
     }
 
     /**
@@ -367,15 +368,19 @@ ${person.personalYear.reductionSteps.join('\n')}</div>
         
         datesToRender.forEach(date => {
             const monthName = new Date(date.year, date.month - 1, date.day).toLocaleDateString('en-US', { month: 'long' });
+            const dateKey = `${date.year}-${date.month.toString().padStart(2, '0')}-${date.day.toString().padStart(2, '0')}`;
             
             html += `
                 <div class="interesting-date-card">
-                    <h4>${monthName} ${date.day}, ${date.year}</h4>
-                    <div class="interesting-date-reason">${date.reasons.join(', ')}</div>
-                    <div class="interesting-date-calc">
-                        ${date.calculation.join(' + ')} = ${date.total}
-                        ${date.reductionSteps.length > 0 ? '\n' + date.reductionSteps.join('\n') : ''}
-                        <br><strong>Lifepath: ${date.lifepath}</strong>
+                    <input type="checkbox" class="date-checkbox" data-date-key="${dateKey}" id="date-${dateKey}">
+                    <div class="date-content">
+                        <h4>${monthName} ${date.day}, ${date.year}</h4>
+                        <div class="interesting-date-reason">${date.reasons.join(', ')}</div>
+                        <div class="interesting-date-calc">
+                            ${date.calculation.join(' + ')} = ${date.total}
+                            ${date.reductionSteps.length > 0 ? '\n' + date.reductionSteps.join('\n') : ''}
+                            <br><strong>Lifepath: ${date.lifepath}</strong>
+                        </div>
                     </div>
                 </div>
             `;

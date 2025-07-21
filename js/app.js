@@ -26,6 +26,9 @@ class NumerologyApp {
             // Initialize date filters
             window.dateFilters.setInterestingDates([]);
             
+            // Initialize email scheduler
+            window.emailScheduler.init();
+            
             // Setup global error handling
             this.setupErrorHandling();
             

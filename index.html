@@ -41,37 +41,63 @@
             <div id="familyResults"></div>
             
             <div id="interestingDates" class="interesting-dates-section">
-                <h2>Interesting Dates for <span id="interestingYear"></span></h2>
+                <h2>Date Explorer for <span id="interestingYear"></span></h2>
                 <p class="interesting-description">
-                    Dates where lifepath = 11, 22, 33, 28, or dates falling on 11th, 22nd, 28th of each month
+                    Select day and lifepath number combinations to discover meaningful dates throughout the year
                 </p>
                 
                 <div class="filter-controls">
                     <div class="filter-group">
-                        <label for="dayFilter">Filter by Day:</label>
+                        <label for="dayFilter">Day of Month:</label>
                         <select id="dayFilter" onchange="applyDateFilters()">
-                            <option value="">All Days</option>
-                            <option value="11">11th of Month</option>
-                            <option value="22">22nd of Month</option>
-                            <option value="28">28th of Month</option>
+                            <option value="">-- Select Day --</option>
                         </select>
                     </div>
                     
                     <div class="filter-group">
-                        <label for="lifepathFilter">Filter by Lifepath:</label>
+                        <label for="lifepathFilter">Lifepath Number:</label>
                         <select id="lifepathFilter" onchange="applyDateFilters()">
-                            <option value="">All Lifepaths</option>
-                            <option value="11">Lifepath 11</option>
-                            <option value="22">Lifepath 22</option>
-                            <option value="33">Lifepath 33</option>
-                            <option value="28">Lifepath 28</option>
+                            <option value="">-- Select Lifepath --</option>
                         </select>
                     </div>
                     
-                    <button onclick="clearDateFilters()" class="clear-filters-btn">Clear Filters</button>
+                    <button onclick="clearDateFilters()" class="clear-filters-btn">Clear Selection</button>
                 </div>
                 
+                <div id="dateFilterStatus" class="filter-status"></div>
                 <div id="interestingDatesResults"></div>
+                
+                <div id="emailScheduler" class="email-scheduler" style="display: none;">
+                    <h3>📧 Schedule Email Reminders</h3>
+                    <p class="email-description">Get personalized numerology insights delivered to your inbox on selected dates</p>
+                    
+                    <div class="selected-dates-summary">
+                        <h4>Selected Dates:</h4>
+                        <div id="selectedDatesList" class="selected-dates-list"></div>
+                    </div>
+                    
+                    <div class="email-form">
+                        <div class="input-group">
+                            <label for="userEmail">Email Address:</label>
+                            <input type="email" id="userEmail" placeholder="your.email@example.com" required>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="reminderTime">Send Time:</label>
+                            <select id="reminderTime">
+                                <option value="09:00">9:00 AM</option>
+                                <option value="12:00">12:00 PM (Noon)</option>
+                                <option value="18:00">6:00 PM</option>
+                                <option value="20:00">8:00 PM</option>
+                            </select>
+                        </div>
+                        
+                        <div class="email-actions">
+                            <button onclick="scheduleEmailReminders()" class="schedule-btn">Schedule Reminders</button>
+                            <button onclick="clearSelectedDates()" class="clear-selection-btn">Clear Selection</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -109,6 +135,7 @@
     <script src="js/numerology.js"></script>
     <script src="js/zodiac.js"></script>
     <script src="js/filters.js"></script>
+    <script src="js/email-scheduler.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/app.js"></script>
 </body>
