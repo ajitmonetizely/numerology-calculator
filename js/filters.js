@@ -3,6 +3,7 @@ class DateFilters {
     constructor() {
         this.allInterestingDates = [];
         this.filteredDates = [];
+        this.currentYear = APP_CONFIG.numerology.currentYear;
     }
 
     /**
@@ -11,7 +12,7 @@ class DateFilters {
      */
     setInterestingDates(dates) {
         this.allInterestingDates = dates;
-        this.filteredDates = [...dates]; // Copy array
+        this.filteredDates = []; // Start with no dates showing
     }
 
     /**
@@ -22,27 +23,112 @@ class DateFilters {
         const dayFilter = document.getElementById('dayFilter')?.value;
         const lifepathFilter = document.getElementById('lifepathFilter')?.value;
         
-        let filtered = [...this.allInterestingDates];
-        
-        // Apply day filter
-        if (dayFilter && dayFilter !== '') {
-            const filterDay = parseInt(dayFilter);
-            filtered = filtered.filter(date => date.day === filterDay);
+        // Only generate dates if at least one filter is selected
+        if (!dayFilter && !lifepathFilter) {
+            this.filteredDates = [];
+            this.updateFilterStatus('Please select a day or lifepath number to see dates');
+            return [];
         }
         
-        // Apply lifepath filter
-        if (lifepathFilter && lifepathFilter !== '') {
-            const filterLifepath = parseInt(lifepathFilter);
-            filtered = filtered.filter(date => date.lifepath === filterLifepath);
-        }
-        
-        this.filteredDates = filtered;
-        return filtered;
+        // Generate dates based on selected filters
+        this.filteredDates = this.generateFilteredDates(dayFilter, lifepathFilter);
+        this.updateFilterStatus('');
+        return this.filteredDates;
     }
 
     /**
-     * Clear all filters and return to showing all dates
-     * @returns {Array} All interesting dates
+     * Generate dates based on filter criteria
+     * @param {string} dayFilter - Selected day (1-31 or empty)
+     * @param {string} lifepathFilter - Selected lifepath (1-33 or empty)
+     * @returns {Array} Generated dates matching criteria
+     */
+    generateFilteredDates(dayFilter, lifepathFilter) {
+        const dates = [];
+        const year = this.currentYear;
+        const filterDay = dayFilter ? parseInt(dayFilter) : null;
+        const filterLifepath = lifepathFilter ? parseInt(lifepathFilter) : null;
+        
+        // Iterate through all months
+        for (let month = 1; month <= 12; month++) {
+            const daysInMonth = new Date(year, month, 0).getDate();
+            
+            // Iterate through days in month
+            for (let day = 1; day <= daysInMonth; day++) {
+                // Skip if day filter is set and doesn't match
+                if (filterDay && day !== filterDay) continue;
+                
+                // Calculate lifepath for this date
+                const lifepathResult = NumerologyCalculator.calculateLifepath(`${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`);
+                
+                // Skip if lifepath filter is set and doesn't match
+                if (filterLifepath && lifepathResult.number !== filterLifepath) continue;
+                
+                // Add matching date
+                dates.push({
+                    year: year,
+                    month: month,
+                    day: day,
+                    lifepath: lifepathResult.number,
+                    total: lifepathResult.total,
+                    calculation: lifepathResult.calculation,
+                    reductionSteps: lifepathResult.reductionSteps,
+                    reasons: this.generateReasons(day, lifepathResult.number)
+                });
+            }
+        }
+        
+        return dates;
+    }
+
+    /**
+     * Generate reasons why this date is interesting
+     * @param {number} day - Day of month
+     * @param {number} lifepath - Lifepath number
+     * @returns {Array} Array of reason strings
+     */
+    generateReasons(day, lifepath) {
+        const reasons = [];
+        
+        // Lifepath reasons
+        if ([11, 22, 33].includes(lifepath)) {
+            reasons.push(`Master number lifepath ${lifepath}`);
+        } else if (lifepath === 28) {
+            reasons.push(`Special lifepath number 28`);
+        } else {
+            reasons.push(`Lifepath number ${lifepath}`);
+        }
+        
+        // Day reasons
+        if ([11, 22, 33].includes(day)) {
+            reasons.push(`Master number day ${day}`);
+        } else if (day === 28) {
+            reasons.push(`Special day 28`);
+        } else {
+            reasons.push(`Day ${day} of month`);
+        }
+        
+        return reasons;
+    }
+
+    /**
+     * Update filter status message
+     * @param {string} message - Status message to display
+     */
+    updateFilterStatus(message) {
+        const statusDiv = document.getElementById('dateFilterStatus');
+        if (statusDiv) {
+            if (message) {
+                statusDiv.innerHTML = `<p class="filter-message">${message}</p>`;
+                statusDiv.style.display = 'block';
+            } else {
+                statusDiv.style.display = 'none';
+            }
+        }
+    }
+
+    /**
+     * Clear all filters and return to showing no dates
+     * @returns {Array} Empty array (no dates until filters selected)
      */
     clearFilters() {
         const dayFilter = document.getElementById('dayFilter');
@@ -51,7 +137,8 @@ class DateFilters {
         if (dayFilter) dayFilter.value = '';
         if (lifepathFilter) lifepathFilter.value = '';
         
-        this.filteredDates = [...this.allInterestingDates];
+        this.filteredDates = [];
+        this.updateFilterStatus('Select a day or lifepath number to explore dates');
         return this.filteredDates;
     }
 
@@ -98,56 +185,90 @@ class DateFilters {
      * Update filter dropdowns with dynamic options
      */
     updateFilterOptions() {
-        const options = this.generateFilterOptions();
-        
-        // Update day filter options
+        try {
+            this.populateDayOptions();
+            this.populateLifepathOptions();
+            console.log('✅ Date filter options populated successfully');
+        } catch (error) {
+            console.error('❌ Error populating filter options:', error);
+        }
+    }
+
+    /**
+     * Populate day filter with all possible day numbers (1-31)
+     */
+    populateDayOptions() {
         const dayFilter = document.getElementById('dayFilter');
-        if (dayFilter && options.days.length > 0) {
-            const currentValue = dayFilter.value;
-            
-            // Clear existing options except "All Days"
-            while (dayFilter.children.length > 1) {
-                dayFilter.removeChild(dayFilter.lastChild);
-            }
-            
-            // Add dynamic options
-            options.days.forEach(day => {
-                if ([11, 22, 28].includes(day)) { // Only show the special days
-                    const option = document.createElement('option');
-                    option.value = day;
-                    option.textContent = `${day}${this.getDayOrdinal(day)} of Month`;
-                    dayFilter.appendChild(option);
-                }
-            });
-            
-            // Restore previous selection if still valid
-            if (currentValue && options.days.includes(parseInt(currentValue))) {
-                dayFilter.value = currentValue;
-            }
+        if (!dayFilter) return;
+        
+        const currentValue = dayFilter.value;
+        
+        // Clear existing options except the default "-- Select Day --"
+        while (dayFilter.children.length > 1) {
+            dayFilter.removeChild(dayFilter.lastChild);
         }
         
-        // Update lifepath filter options
+        // Add all possible day numbers (1-31)
+        for (let day = 1; day <= 31; day++) {
+            const option = document.createElement('option');
+            option.value = day;
+            option.textContent = `${day}${this.getDayOrdinal(day)}`;
+            
+            // Add special notation for master numbers
+            if ([11, 22, 33].includes(day)) {
+                option.textContent += ` (Master Number)`;
+            } else if (day === 28) {
+                option.textContent += ` (Special Number)`;
+            }
+            
+            dayFilter.appendChild(option);
+        }
+        
+        // Restore previous selection if still valid
+        if (currentValue && parseInt(currentValue) >= 1 && parseInt(currentValue) <= 31) {
+            dayFilter.value = currentValue;
+        }
+    }
+
+    /**
+     * Populate lifepath filter with all possible lifepath numbers (1-33)
+     */
+    populateLifepathOptions() {
         const lifepathFilter = document.getElementById('lifepathFilter');
-        if (lifepathFilter && options.lifepaths.length > 0) {
-            const currentValue = lifepathFilter.value;
-            
-            // Clear existing options except "All Lifepaths"
-            while (lifepathFilter.children.length > 1) {
-                lifepathFilter.removeChild(lifepathFilter.lastChild);
-            }
-            
-            // Add dynamic options
-            options.lifepaths.forEach(lifepath => {
-                const option = document.createElement('option');
-                option.value = lifepath;
-                option.textContent = `Lifepath ${lifepath}`;
-                lifepathFilter.appendChild(option);
-            });
-            
-            // Restore previous selection if still valid
-            if (currentValue && options.lifepaths.includes(parseInt(currentValue))) {
-                lifepathFilter.value = currentValue;
-            }
+        if (!lifepathFilter) return;
+        
+        const currentValue = lifepathFilter.value;
+        
+        // Clear existing options except the default "-- Select Lifepath --"
+        while (lifepathFilter.children.length > 1) {
+            lifepathFilter.removeChild(lifepathFilter.lastChild);
+        }
+        
+        // Add standard numbers 1-9
+        for (let num = 1; num <= 9; num++) {
+            const option = document.createElement('option');
+            option.value = num;
+            option.textContent = `Lifepath ${num}`;
+            lifepathFilter.appendChild(option);
+        }
+        
+        // Add master numbers
+        [11, 22, 33].forEach(num => {
+            const option = document.createElement('option');
+            option.value = num;
+            option.textContent = `Lifepath ${num} (Master Number)`;
+            lifepathFilter.appendChild(option);
+        });
+        
+        // Add special number 28
+        const option28 = document.createElement('option');
+        option28.value = 28;
+        option28.textContent = `Lifepath 28 (Special Number)`;
+        lifepathFilter.appendChild(option28);
+        
+        // Restore previous selection if still valid
+        if (currentValue) {
+            lifepathFilter.value = currentValue;
         }
     }
 

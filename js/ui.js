@@ -345,11 +345,15 @@ ${person.personalYear.reductionSteps.join('\n')}</div>
         
         // Initialize filter system with empty dates and populate options
         window.dateFilters.setInterestingDates([]);
-        window.dateFilters.updateFilterOptions();
         
-        // Start with no dates showing - user must select filters
-        window.dateFilters.clearFilters();
-        this.renderInterestingDates([]);
+        // Ensure DOM elements exist before populating options
+        setTimeout(() => {
+            window.dateFilters.updateFilterOptions();
+            
+            // Start with no dates showing - user must select filters
+            window.dateFilters.clearFilters();
+            this.renderInterestingDates([]);
+        }, 100);
     }
 
     /**
