@@ -86,12 +86,16 @@ class EmailScheduler {
             // Add date to selection
             const dateObj = this.createDateObjectFromKey(dateKey);
             this.selectedDates.set(dateKey, dateObj);
-            dateCard.classList.add('selected');
+            if (dateCard) {
+                dateCard.classList.add('ring-2', 'ring-primary', 'bg-purple-50');
+            }
             console.log('✅ Added date to selection. Total selected:', this.selectedDates.size);
         } else {
             // Remove date from selection
             this.selectedDates.delete(dateKey);
-            dateCard.classList.remove('selected');
+            if (dateCard) {
+                dateCard.classList.remove('ring-2', 'ring-primary', 'bg-purple-50');
+            }
             console.log('❌ Removed date from selection. Total selected:', this.selectedDates.size);
         }
         
@@ -202,7 +206,10 @@ class EmailScheduler {
         const checkbox = document.querySelector(`input[data-date-key="${dateKey}"]`);
         if (checkbox) {
             checkbox.checked = false;
-            checkbox.closest('.interesting-date-card').classList.remove('selected');
+            const dateCard = checkbox.closest('.bg-white');
+            if (dateCard) {
+                dateCard.classList.remove('ring-2', 'ring-primary', 'bg-purple-50');
+            }
         }
         
         this.updateSelectedDatesDisplay();
@@ -216,7 +223,10 @@ class EmailScheduler {
         // Uncheck all checkboxes
         document.querySelectorAll('.date-checkbox:checked').forEach(checkbox => {
             checkbox.checked = false;
-            checkbox.closest('.interesting-date-card').classList.remove('selected');
+            const dateCard = checkbox.closest('.bg-white');
+            if (dateCard) {
+                dateCard.classList.remove('ring-2', 'ring-primary', 'bg-purple-50');
+            }
         });
         
         this.selectedDates.clear();
