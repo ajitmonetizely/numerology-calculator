@@ -552,7 +552,21 @@ window.emailScheduler = new EmailScheduler();
 
 // Global functions for HTML event handlers
 function scheduleEmailReminders() {
-    window.emailScheduler.scheduleEmailReminders();
+    console.log('📧 Schedule button clicked!');
+    console.log('Email scheduler instance:', window.emailScheduler);
+    
+    if (!window.emailScheduler) {
+        console.error('❌ Email scheduler not initialized!');
+        alert('Email scheduler not initialized. Please refresh the page.');
+        return;
+    }
+    
+    try {
+        window.emailScheduler.scheduleEmailReminders();
+    } catch (error) {
+        console.error('❌ Error calling scheduleEmailReminders:', error);
+        alert('Error scheduling emails: ' + error.message);
+    }
 }
 
 function clearSelectedDates() {
