@@ -122,10 +122,8 @@ class DateFilters {
                     matches = true;
                 }
                 
-                // If both day and lifepath filters are selected, require both to match
-                if (filterDays.length > 0 && filterLifepaths.length > 0) {
-                    matches = filterDays.includes(day) && filterLifepaths.includes(lifepathResult.number);
-                }
+                // Union logic: dates matching any selected day OR any selected lifepath
+                // (The above OR conditions already implement union - no additional logic needed)
                 
                 if (matches) {
                     // Add matching date
