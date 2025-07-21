@@ -109,21 +109,26 @@ class DateFilters {
                 // Calculate lifepath for this date
                 const lifepathResult = NumerologyCalculator.calculateLifepath(`${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`);
                 
-                // Check if date matches any of the selected criteria
+                // Union logic: show dates that match ANY selected criteria
                 let matches = false;
                 
-                // Match if day is in selected days (if any selected)
-                if (filterDays.length > 0 && filterDays.includes(day)) {
-                    matches = true;
-                }
+                // Check if this date matches any selected day
+                const dayMatches = filterDays.length > 0 ? filterDays.includes(day) : false;
                 
-                // Match if lifepath is in selected lifepaths (if any selected)
-                if (filterLifepaths.length > 0 && filterLifepaths.includes(lifepathResult.number)) {
-                    matches = true;
-                }
+                // Check if this date matches any selected lifepath
+                const lifepathMatches = filterLifepaths.length > 0 ? filterLifepaths.includes(lifepathResult.number) : false;
                 
-                // Union logic: dates matching any selected day OR any selected lifepath
-                // (The above OR conditions already implement union - no additional logic needed)
+                // For union: include date if it matches ANY selected criteria
+                if (filterDays.length > 0 && filterLifepaths.length > 0) {
+                    // Both filters active: show dates matching EITHER condition (OR logic)
+                    matches = dayMatches || lifepathMatches;
+                } else if (filterDays.length > 0) {
+                    // Only day filter active
+                    matches = dayMatches;
+                } else if (filterLifepaths.length > 0) {
+                    // Only lifepath filter active
+                    matches = lifepathMatches;
+                }
                 
                 if (matches) {
                     // Add matching date
