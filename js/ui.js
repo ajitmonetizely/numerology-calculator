@@ -241,9 +241,13 @@ class UIManager {
         
         let html = '';
         
-        results.forEach((person, index) => {
-            html += this.generatePersonHTML(person);
-        });
+        if (results.length === 1) {
+            // Single person - use original detailed layout
+            html = this.generatePersonHTML(results[0]);
+        } else {
+            // Multiple people - use new compact layout
+            html = this.generateFamilyCompactHTML(results);
+        }
         
         familyResultsDiv.innerHTML = html;
         
@@ -257,7 +261,7 @@ class UIManager {
         
         // Scroll to result with smooth animation
         setTimeout(() => {
-            resultsDiv.scrollIntoView({ 
+            resultsDiv.scrollIntoView({
                 behavior: APP_CONFIG.ui.scrollBehavior,
                 block: 'start'
             });
@@ -354,6 +358,228 @@ class UIManager {
                         </div>
                     </div>
                 </div>
+            </div>
+        `;
+    }
+
+    /**
+     * Generate compact HTML for multiple family members with unified timeline
+     * @param {Array} results - Array of family member results
+     * @returns {string} HTML string
+     */
+    generateFamilyCompactHTML(results) {
+        const currentYear = APP_CONFIG.numerology.currentYear;
+        const timelineStartYear = currentYear - APP_CONFIG.zodiac.timelineYears;
+        const timelineEndYear = currentYear + APP_CONFIG.zodiac.timelineYears;
+        
+        // Generate compact individual cards
+        const individualCards = results.map(person => this.generateCompactPersonCard(person)).join('');
+        
+        // Generate unified family timeline
+        const familyTimeline = this.generateUnifiedTimeline(results, currentYear);
+        
+        return `
+            <div class="space-y-8">
+                <!-- Compact Individual Cards -->
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    ${individualCards}
+                </div>
+                
+                <!-- Unified Family Timeline -->
+                <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">Family Chinese Zodiac Timeline</h3>
+                    <div class="text-sm text-gray-600 mb-6 text-center">
+                        Overall family compatibility for each year - showing combined status and which members drive it
+                    </div>
+                    ${familyTimeline}
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * Generate a compact card for a single person
+     * @param {Object} person - Person's numerology data
+     * @returns {string} HTML string
+     */
+    generateCompactPersonCard(person) {
+        return `
+            <div class="bg-white rounded-lg shadow-md p-4 border border-gray-200">
+                <h4 class="font-bold text-gray-800 mb-3 text-center">${person.name}</h4>
+                
+                <!-- Lifepath -->
+                <div class="bg-purple-50 rounded-lg p-3 mb-3 border border-purple-200">
+                    <div class="text-xs font-medium text-purple-600 mb-1">Lifepath</div>
+                    <div class="text-2xl font-bold text-purple-700 text-center">${person.lifepath.number}</div>
+                </div>
+                
+                <!-- Personal Year -->
+                <div class="bg-teal-50 rounded-lg p-3 mb-3 border border-teal-200">
+                    <div class="text-xs font-medium text-teal-600 mb-1">Personal Year ${person.personalYear.currentYear}</div>
+                    <div class="text-2xl font-bold text-teal-700 text-center">${person.personalYear.number}</div>
+                </div>
+                
+                <!-- Chinese Zodiac -->
+                <div class="bg-amber-50 rounded-lg p-3 mb-3 border border-amber-200">
+                    <div class="text-xs font-medium text-amber-600 mb-1">Chinese Zodiac</div>
+                    <div class="text-center">
+                        <div class="text-lg font-bold text-amber-700">${person.chineseZodiac.animal.emoji}</div>
+                        <div class="text-xs font-semibold text-amber-600">${person.chineseZodiac.animal.name}</div>
+                    </div>
+                </div>
+                
+                <!-- Current Year Status -->
+                <div class="rounded-lg p-3 border text-center ${person.isCurrentYearEnemy ? 'bg-red-50 border-red-200' : person.isCurrentYearFriendly ? 'bg-green-50 border-green-200' : 'bg-blue-50 border-blue-200'}">
+                    <div class="text-xs font-medium mb-1 ${person.isCurrentYearEnemy ? 'text-red-600' : person.isCurrentYearFriendly ? 'text-green-600' : 'text-blue-600'}">
+                        ${person.currentYearZodiac.year} Status
+                    </div>
+                    <div class="text-sm font-bold ${person.isCurrentYearEnemy ? 'text-red-700' : person.isCurrentYearFriendly ? 'text-green-700' : 'text-blue-700'}">
+                        ${person.isCurrentYearEnemy ? '⚠️ Enemy' : person.isCurrentYearFriendly ? '💚 Friendly' : '✅ Neutral'}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * Generate unified timeline showing family compatibility by year
+     * @param {Array} results - Array of family member results
+     * @param {number} currentYear - Current year
+     * @returns {string} HTML string
+     */
+    generateUnifiedTimeline(results, currentYear) {
+        const timelineYears = APP_CONFIG.zodiac.timelineYears;
+        const allYears = [];
+        
+        // Generate year range
+        for (let year = currentYear - timelineYears; year <= currentYear + timelineYears; year++) {
+            const yearData = this.calculateFamilyYearCompatibility(results, year);
+            allYears.push(yearData);
+        }
+        
+        // Split into past, current, and future
+        const pastYears = allYears.filter(year => year.year < currentYear);
+        const currentYearData = allYears.find(year => year.year === currentYear);
+        const futureYears = allYears.filter(year => year.year > currentYear);
+        
+        return `
+            <div class="grid lg:grid-cols-3 gap-6">
+                <!-- Past Years -->
+                <div class="space-y-2">
+                    <h5 class="font-semibold text-gray-700 mb-4 text-center">Past Years (${currentYear - timelineYears}-${currentYear - 1})</h5>
+                    ${pastYears.map(yearData => this.generateTimelineYearCard(yearData)).join('')}
+                </div>
+                
+                <!-- Current Year -->
+                <div class="space-y-2">
+                    <h5 class="font-semibold text-gray-700 mb-4 text-center">Current Year</h5>
+                    ${this.generateTimelineYearCard(currentYearData, true)}
+                </div>
+                
+                <!-- Future Years -->
+                <div class="space-y-2">
+                    <h5 class="font-semibold text-gray-700 mb-4 text-center">Future Years (${currentYear + 1}-${currentYear + timelineYears})</h5>
+                    ${futureYears.map(yearData => this.generateTimelineYearCard(yearData)).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * Calculate family compatibility for a specific year
+     * @param {Array} results - Array of family member results
+     * @param {number} year - Year to calculate compatibility for
+     * @returns {Object} Year compatibility data
+     */
+    calculateFamilyYearCompatibility(results, year) {
+        const yearZodiacKey = window.zodiacSystem.getZodiacAnimalKey(year);
+        const yearZodiac = window.zodiacSystem.getZodiacDataForYear(year);
+        
+        const memberStatuses = results.map(person => {
+            const isEnemy = window.zodiacSystem.isEnemyYear(person.chineseZodiac.animalKey, yearZodiacKey);
+            const isFriendly = window.zodiacSystem.isFriendlyYear(person.chineseZodiac.animalKey, yearZodiacKey);
+            
+            return {
+                name: person.name,
+                isEnemy: isEnemy,
+                isFriendly: isFriendly,
+                status: isEnemy ? 'enemy' : isFriendly ? 'friendly' : 'neutral'
+            };
+        });
+        
+        // Determine overall family status (priority: enemy > neutral > friendly)
+        const hasEnemies = memberStatuses.some(m => m.isEnemy);
+        const hasFriendly = memberStatuses.some(m => m.isFriendly);
+        const hasNeutral = memberStatuses.some(m => !m.isEnemy && !m.isFriendly);
+        
+        let overallStatus = 'neutral';
+        let statusIcon = '✅';
+        let statusColor = 'blue';
+        
+        if (hasEnemies) {
+            overallStatus = 'enemy';
+            statusIcon = '⚠️';
+            statusColor = 'red';
+        } else if (hasNeutral) {
+            overallStatus = 'neutral';
+            statusIcon = '✅';
+            statusColor = 'blue';
+        } else if (hasFriendly) {
+            overallStatus = 'friendly';
+            statusIcon = '💚';
+            statusColor = 'green';
+        }
+        
+        return {
+            year: year,
+            zodiac: yearZodiac,
+            overallStatus: overallStatus,
+            statusIcon: statusIcon,
+            statusColor: statusColor,
+            memberStatuses: memberStatuses,
+            enemyMembers: memberStatuses.filter(m => m.isEnemy),
+            friendlyMembers: memberStatuses.filter(m => m.isFriendly),
+            neutralMembers: memberStatuses.filter(m => !m.isEnemy && !m.isFriendly)
+        };
+    }
+
+    /**
+     * Generate HTML for a single year in the timeline
+     * @param {Object} yearData - Year compatibility data
+     * @param {boolean} isCurrentYear - Whether this is the current year
+     * @returns {string} HTML string
+     */
+    generateTimelineYearCard(yearData, isCurrentYear = false) {
+        const { year, zodiac, overallStatus, statusIcon, statusColor, memberStatuses, enemyMembers, friendlyMembers, neutralMembers } = yearData;
+        
+        const borderClass = `border-${statusColor}-200`;
+        const bgClass = `bg-${statusColor}-50`;
+        const textClass = `text-${statusColor}-700`;
+        const currentYearBorder = isCurrentYear ? 'ring-2 ring-primary ring-offset-1' : '';
+        
+        // Create attribution text
+        const attributions = [];
+        if (enemyMembers.length > 0) {
+            attributions.push(`Enemy: ${enemyMembers.map(m => m.name).join(', ')}`);
+        }
+        if (friendlyMembers.length > 0) {
+            attributions.push(`Friendly: ${friendlyMembers.map(m => m.name).join(', ')}`);
+        }
+        if (neutralMembers.length > 0) {
+            attributions.push(`Neutral: ${neutralMembers.map(m => m.name).join(', ')}`);
+        }
+        
+        return `
+            <div class="p-3 rounded-lg border ${bgClass} ${borderClass} ${currentYearBorder}">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="font-semibold ${textClass}">${zodiac.emoji} ${year}</div>
+                    <div class="text-lg">${statusIcon}</div>
+                </div>
+                <div class="text-sm font-medium ${textClass} mb-1">${zodiac.name}</div>
+                <div class="text-xs text-gray-600 space-y-1">
+                    ${attributions.map(attr => `<div>${attr}</div>`).join('')}
+                </div>
+                ${isCurrentYear ? '<div class="mt-2 text-xs font-bold text-primary">← Current Year</div>' : ''}
             </div>
         `;
     }
