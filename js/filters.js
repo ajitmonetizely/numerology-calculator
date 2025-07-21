@@ -20,19 +20,27 @@ class DateFilters {
      * @returns {Array} Filtered dates array
      */
     applyFilters() {
-        const dayFilter = document.getElementById('dayFilter')?.value;
-        const lifepathFilter = document.getElementById('lifepathFilter')?.value;
+        const dayFilterSelect = document.getElementById('dayFilter');
+        const lifepathFilterSelect = document.getElementById('lifepathFilter');
+        
+        // Get selected values from multi-select dropdowns
+        const selectedDays = dayFilterSelect ? Array.from(dayFilterSelect.selectedOptions)
+            .map(option => option.value).filter(v => v !== '') : [];
+        const selectedLifepaths = lifepathFilterSelect ? Array.from(lifepathFilterSelect.selectedOptions)
+            .map(option => option.value).filter(v => v !== '') : [];
         
         // Only generate dates if at least one filter is selected
-        if (!dayFilter && !lifepathFilter) {
+        if (selectedDays.length === 0 && selectedLifepaths.length === 0) {
             this.filteredDates = [];
-            this.updateFilterStatus('Please select a day or lifepath number to see dates');
+            this.updateFilterStatus('Please select day(s) or lifepath number(s) to see dates');
+            this.updateDownloadButton(false);
             return [];
         }
         
         // Generate dates based on selected filters
-        this.filteredDates = this.generateFilteredDates(dayFilter, lifepathFilter);
+        this.filteredDates = this.generateMultiFilteredDates(selectedDays, selectedLifepaths);
         this.updateFilterStatus('');
+        this.updateDownloadButton(this.filteredDates.length > 0);
         return this.filteredDates;
     }
 
@@ -74,6 +82,65 @@ class DateFilters {
                     reductionSteps: lifepathResult.reductionSteps,
                     reasons: this.generateReasons(day, lifepathResult.number)
                 });
+            }
+        }
+        
+        return dates;
+    }
+
+    /**
+     * Generate dates based on multiple filter criteria (multi-select)
+     * @param {Array} selectedDays - Array of selected day strings
+     * @param {Array} selectedLifepaths - Array of selected lifepath strings
+     * @returns {Array} Generated dates matching any of the criteria
+     */
+    generateMultiFilteredDates(selectedDays, selectedLifepaths) {
+        const dates = [];
+        const year = this.currentYear;
+        const filterDays = selectedDays.map(d => parseInt(d));
+        const filterLifepaths = selectedLifepaths.map(l => parseInt(l));
+        
+        // Iterate through all months
+        for (let month = 1; month <= 12; month++) {
+            const daysInMonth = new Date(year, month, 0).getDate();
+            
+            // Iterate through days in month
+            for (let day = 1; day <= daysInMonth; day++) {
+                // Calculate lifepath for this date
+                const lifepathResult = NumerologyCalculator.calculateLifepath(`${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`);
+                
+                // Check if date matches any of the selected criteria
+                let matches = false;
+                
+                // Match if day is in selected days (if any selected)
+                if (filterDays.length > 0 && filterDays.includes(day)) {
+                    matches = true;
+                }
+                
+                // Match if lifepath is in selected lifepaths (if any selected)
+                if (filterLifepaths.length > 0 && filterLifepaths.includes(lifepathResult.number)) {
+                    matches = true;
+                }
+                
+                // If both day and lifepath filters are selected, require both to match
+                if (filterDays.length > 0 && filterLifepaths.length > 0) {
+                    matches = filterDays.includes(day) && filterLifepaths.includes(lifepathResult.number);
+                }
+                
+                if (matches) {
+                    // Add matching date
+                    dates.push({
+                        year: year,
+                        month: month,
+                        day: day,
+                        lifepath: lifepathResult.number,
+                        total: lifepathResult.total,
+                        calculation: lifepathResult.calculation,
+                        reductionSteps: lifepathResult.reductionSteps,
+                        reasons: this.generateReasons(day, lifepathResult.number),
+                        selected: false // Track selection for calendar export
+                    });
+                }
             }
         }
         
@@ -134,11 +201,17 @@ class DateFilters {
         const dayFilter = document.getElementById('dayFilter');
         const lifepathFilter = document.getElementById('lifepathFilter');
         
-        if (dayFilter) dayFilter.value = '';
-        if (lifepathFilter) lifepathFilter.value = '';
+        // Clear multi-select dropdowns
+        if (dayFilter) {
+            Array.from(dayFilter.options).forEach(option => option.selected = false);
+        }
+        if (lifepathFilter) {
+            Array.from(lifepathFilter.options).forEach(option => option.selected = false);
+        }
         
         this.filteredDates = [];
-        this.updateFilterStatus('Select a day or lifepath number to explore dates');
+        this.updateFilterStatus('Select day(s) or lifepath number(s) to explore dates');
+        this.updateDownloadButton(false);
         return this.filteredDates;
     }
 
@@ -359,6 +432,154 @@ class DateFilters {
         
         return sortedDates;
     }
+
+    /**
+     * Update download button state based on selected dates
+     * @param {boolean} hasValidDates - Whether there are dates available for download
+     */
+    updateDownloadButton(hasValidDates) {
+        const downloadBtn = document.getElementById('downloadCalendarBtn');
+        if (downloadBtn) {
+            downloadBtn.disabled = !hasValidDates;
+            downloadBtn.style.opacity = hasValidDates ? '1' : '0.5';
+        }
+    }
+
+    /**
+     * Get selected dates from checkboxes for calendar export
+     * @returns {Array} Array of selected date objects
+     */
+    getSelectedDates() {
+        const selectedDates = [];
+        const checkboxes = document.querySelectorAll('input[type="checkbox"][data-date]');
+        
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                const dateStr = checkbox.getAttribute('data-date');
+                const dateObj = this.filteredDates.find(date =>
+                    `${date.year}-${date.month.toString().padStart(2, '0')}-${date.day.toString().padStart(2, '0')}` === dateStr
+                );
+                if (dateObj) {
+                    selectedDates.push(dateObj);
+                }
+            }
+        });
+        
+        return selectedDates;
+    }
+
+    /**
+     * Generate .ics calendar file content from selected dates
+     * @param {Array} dates - Array of date objects to include in calendar
+     * @returns {string} ICS file content
+     */
+    generateICSContent(dates) {
+        const now = new Date();
+        const timestamp = now.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+        
+        let icsContent = [
+            'BEGIN:VCALENDAR',
+            'VERSION:2.0',
+            'PRODID:-//Numerology Calculator//Date Explorer//EN',
+            'CALSCALE:GREGORIAN',
+            'METHOD:PUBLISH'
+        ];
+
+        dates.forEach((date, index) => {
+            const eventDate = `${date.year}${date.month.toString().padStart(2, '0')}${date.day.toString().padStart(2, '0')}`;
+            const uid = `numerology-${eventDate}-${index}@numerology-calculator.com`;
+            
+            // Create event title with lifepath info
+            const title = `Numerology: Day ${date.day}, Lifepath ${date.lifepath}${this.getMasterNumberSuffix(date.lifepath)}`;
+            
+            // Create description with reasons and calculation details
+            const description = [
+                `Numerology Date: ${this.getMonthName(date.month)} ${date.day}, ${date.year}`,
+                `Lifepath Number: ${date.lifepath}${this.getMasterNumberSuffix(date.lifepath)}`,
+                `Calculation: ${date.calculation}`,
+                `Total: ${date.total}`,
+                '',
+                'Significance:',
+                ...date.reasons.map(reason => `• ${reason}`),
+                '',
+                'Generated by Numerology Calculator - Date Explorer'
+            ].join('\\n');
+
+            icsContent.push(
+                'BEGIN:VEVENT',
+                `UID:${uid}`,
+                `DTSTAMP:${timestamp}`,
+                `DTSTART;VALUE=DATE:${eventDate}`,
+                `DTEND;VALUE=DATE:${eventDate}`,
+                `SUMMARY:${title}`,
+                `DESCRIPTION:${description}`,
+                'STATUS:CONFIRMED',
+                'TRANSP:TRANSPARENT',
+                'END:VEVENT'
+            );
+        });
+
+        icsContent.push('END:VCALENDAR');
+        return icsContent.join('\r\n');
+    }
+
+    /**
+     * Get month name from month number
+     * @param {number} month - Month number (1-12)
+     * @returns {string} Month name
+     */
+    getMonthName(month) {
+        const months = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+        return months[month - 1] || '';
+    }
+
+    /**
+     * Get suffix for master numbers
+     * @param {number} lifepath - Lifepath number
+     * @returns {string} Suffix text
+     */
+    getMasterNumberSuffix(lifepath) {
+        if ([11, 22, 33].includes(lifepath)) {
+            return ' (Master Number)';
+        } else if (lifepath === 28) {
+            return ' (Special Number)';
+        }
+        return '';
+    }
+
+    /**
+     * Download .ics calendar file with selected dates
+     */
+    downloadCalendar() {
+        const selectedDates = this.getSelectedDates();
+        
+        if (selectedDates.length === 0) {
+            alert('Please select at least one date by checking the boxes next to the dates you want to add to your calendar.');
+            return;
+        }
+
+        try {
+            const icsContent = this.generateICSContent(selectedDates);
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `numerology-dates-${this.currentYear}.ics`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            console.log(`✅ Calendar downloaded with ${selectedDates.length} numerology dates`);
+        } catch (error) {
+            console.error('❌ Error generating calendar file:', error);
+            alert('Error generating calendar file. Please try again.');
+        }
+    }
 }
 
 // Global filter instance
@@ -377,4 +598,8 @@ function clearDateFilters() {
     if (window.uiManager) {
         window.uiManager.renderInterestingDates(allDates);
     }
+}
+
+function downloadCalendar() {
+    window.dateFilters.downloadCalendar();
 }

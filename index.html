@@ -79,20 +79,23 @@
                 
                 <div class="filter-controls">
                     <div class="filter-group">
-                        <label for="dayFilter">Day of Month:</label>
-                        <select id="dayFilter" onchange="applyDateFilters()">
-                            <option value="">-- Select Day --</option>
+                        <label for="dayFilter">Day of Month (Multi-Select):</label>
+                        <select id="dayFilter" multiple onchange="applyDateFilters()">
+                            <option value="">-- Hold Ctrl/Cmd to select multiple --</option>
                         </select>
                     </div>
                     
                     <div class="filter-group">
-                        <label for="lifepathFilter">Lifepath Number:</label>
-                        <select id="lifepathFilter" onchange="applyDateFilters()">
-                            <option value="">-- Select Lifepath --</option>
+                        <label for="lifepathFilter">Lifepath Number (Multi-Select):</label>
+                        <select id="lifepathFilter" multiple onchange="applyDateFilters()">
+                            <option value="">-- Hold Ctrl/Cmd to select multiple --</option>
                         </select>
                     </div>
                     
-                    <button onclick="clearDateFilters()" class="clear-filters-btn">Clear Selection</button>
+                    <div class="filter-group">
+                        <button onclick="clearDateFilters()" class="clear-filters-btn">Clear Selection</button>
+                        <button onclick="downloadCalendar()" class="download-calendar-btn" id="downloadCalendarBtn" disabled>📅 Download Calendar (.ics)</button>
+                    </div>
                 </div>
                 
                 <div id="dateFilterStatus" class="filter-status"></div>
