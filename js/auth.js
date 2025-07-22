@@ -11,7 +11,12 @@ class AuthManager {
      * Initialize authentication system
      */
     async init() {
-        await this.checkAuthStatus();
+        try {
+            await this.checkAuthStatus();
+        } catch (error) {
+            console.warn('Auth status check failed, continuing with offline mode:', error);
+        }
+        
         this.setupEventListeners();
         this.handleUrlParams();
     }
