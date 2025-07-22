@@ -65,6 +65,7 @@ class AuthManager {
      * Setup event listeners for auth UI
      */
     setupEventListeners() {
+        console.log('🎯 Setting up authentication event listeners...');
         // Login form
         document.addEventListener('submit', (e) => {
             if (e.target.id === 'loginForm') {
@@ -84,10 +85,12 @@ class AuthManager {
         // Auth modal controls
         document.addEventListener('click', (e) => {
             if (e.target.matches('[data-auth-action]')) {
+                console.log('🔐 Auth button clicked:', e.target.getAttribute('data-auth-action'));
                 const action = e.target.getAttribute('data-auth-action');
                 this.handleAuthAction(action);
             }
         });
+        console.log('✅ Event listeners set up successfully');
     }
 
     /**
@@ -360,4 +363,6 @@ class AuthManager {
 }
 
 // Create global auth manager instance
+console.log('🔐 Initializing AuthManager...');
 window.authManager = new AuthManager();
+console.log('✅ AuthManager initialized');
