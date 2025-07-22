@@ -35,9 +35,16 @@ class AuthManager {
      */
     async checkAuthStatus() {
         try {
+            // Add timeout to prevent hanging forever
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+            
             const response = await fetch(`${this.backendUrl}/api/auth/me`, {
-                credentials: 'include'
+                credentials: 'include',
+                signal: controller.signal
             });
+            
+            clearTimeout(timeoutId);
 
             if (response.ok) {
                 const data = await response.json();
