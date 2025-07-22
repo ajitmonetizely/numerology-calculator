@@ -11,14 +11,23 @@ class AuthManager {
      * Initialize authentication system
      */
     async init() {
+        console.log('📋 Starting init() method...');
+        
         try {
+            console.log('🔍 Checking auth status...');
             await this.checkAuthStatus();
+            console.log('✅ Auth status check completed');
         } catch (error) {
             console.warn('Auth status check failed, continuing with offline mode:', error);
         }
         
+        console.log('🎯 About to setup event listeners...');
         this.setupEventListeners();
+        
+        console.log('🌐 About to handle URL params...');
         this.handleUrlParams();
+        
+        console.log('🎉 Init method completed successfully!');
     }
 
     /**
