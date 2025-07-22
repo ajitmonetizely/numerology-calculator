@@ -3,7 +3,7 @@ class AuthManager {
     constructor() {
         this.currentUser = null;
         this.isAuthenticated = false;
-        this.backendUrl = 'https://numerology-email-backend-d74405e8d8d7.herokuapp.com';
+        this.backendUrl = 'https://numerology-backend-87645a83ad1c.herokuapp.com';
         this.init();
     }
 
