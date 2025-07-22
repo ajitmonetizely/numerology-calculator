@@ -3,8 +3,34 @@ class AuthManager {
     constructor() {
         this.currentUser = null;
         this.isAuthenticated = false;
-        this.backendUrl = 'https://numerology-backend-87645a83ad1c.herokuapp.com';
+        this.backendUrl = this.getBackendUrl();
         this.init();
+    }
+
+    /**
+     * Get backend URL from environment or use default
+     */
+    getBackendUrl() {
+        // Try to get from window config first (set by server)
+        if (window.APP_CONFIG && window.APP_CONFIG.BACKEND_URL) {
+            return window.APP_CONFIG.BACKEND_URL;
+        }
+        
+        // Fallback to environment detection
+        const hostname = window.location.hostname;
+        
+        // Local development
+        if (hostname === 'localhost' || hostname === '127.0.0.1') {
+            return 'http://localhost:3001';
+        }
+        
+        // Production - use relative path to avoid CORS issues
+        if (hostname.includes('numerology-app-46f3beb03f30.herokuapp.com')) {
+            return 'https://numerology-backend-87645a83ad1c.herokuapp.com';
+        }
+        
+        // Default fallback
+        return 'https://numerology-backend-87645a83ad1c.herokuapp.com';
     }
 
     /**
